@@ -1,0 +1,29 @@
+{
+  "nodes": 64,
+  "area": 600,
+  "range": 100,
+  "flows": 10,
+  "critical_fraction": 0.4,
+  "slots": 1000,
+  "capacity": 8,
+  "arrival_period": 150,
+  "loss": 0.2,
+  "burst": 6,
+  "payload_bytes": 128,
+  "ack_bytes": 8,
+  "risk_samples": 64,
+  "delta": 0.05,
+  "gain_risk": 4,
+  "gain_demand": 2,
+  "max_repair": 5,
+  "static_rate": 2,
+  "energy_j_per_byte": 1e-06,
+  "energy_j_per_operation": 1e-10,
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ]
+}
