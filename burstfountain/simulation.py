@@ -117,7 +117,7 @@ def run(trace, config, method, feedback_loss, no_risk=False, no_priority=False, 
     tx_bytes, feedback_bytes, decode_operations, estimation = 0, 0, 0, []
     decisions = []
     for t in range(config["slots"]):
-        active = [m for m in messages if m["arrival"] <= t < m["deadline"] and not m["delivered"] and m["routes"]]
+        active = [m for m in messages if m["arrival"] <= t < m["deadline"] and m["known_rank"] < m["k"] and m["routes"]]
         for m in active:
             route = m["routes"][0]
             pi = np.array([posterior[lookup[e]] for e in zip(route, route[1:])])
@@ -204,12 +204,12 @@ def run(trace, config, method, feedback_loss, no_risk=False, no_priority=False, 
                 if receiver == m["destination"]:
                     if acknowledged:
                         m["known_rank"] = destination_basis.rank
-                    if destination_basis.rank == m["k"]:
+                    if destination_basis.rank == m["k"] and not m["delivered"]:
                         decoded = destination_basis.decode()
                         if not np.array_equal(decoded, m["payload"]):
                             raise ArithmeticError("Finite-field decoding disagrees with the source payload")
                         m["delivered"], m["decoded_at"] = True, t
-                        active = [item for item in active if not item["delivered"]]
+                    active = [item for item in active if item["known_rank"] < item["k"]]
         posterior = posterior * (1 - p_gb) + (1 - posterior) * p_bg
     successful = [m for m in messages if m["delivered"]]
     critical = [m for m in messages if m["critical"]]
